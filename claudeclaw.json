@@ -1,0 +1,161 @@
+{
+  "$schema": "./claudeclaw.schema.json",
+  "version": "1.0.0",
+  "name": "ClaudeClaw ⚡",
+  "description": "Персональный AI-агент на Claude Code с памятью, скиллами и автоматикой",
+  "owner": {
+    "name": "YOUR_NAME",
+    "telegramId": 0,
+    "timezone": "UTC",
+    "timezoneOffset": 0
+  },
+  "daemon": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 4632,
+    "web": {
+      "enabled": true,
+      "port": 4632
+    }
+  },
+  "telegram": {
+    "enabled": true,
+    "token": "${TELEGRAM_BOT_TOKEN}",
+    "allowedUserIds": [],
+    "progressMessages": true
+  },
+  "models": {
+    "primary": "claude-opus-4-6",
+    "fallback": "claude-sonnet-4-5-20250929",
+    "api": "anthropic"
+  },
+  "memory": {
+    "enabled": true,
+    "provider": "sqlite",
+    "path": "~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/.claude/claudeclaw/memory.sqlite",
+    "embedding": {
+      "model": "auto",
+      "dimensions": 1536
+    },
+    "search": {
+      "maxResults": 5,
+      "vectorWeight": 0.7,
+      "textWeight": 0.3
+    },
+    "decay": {
+      "enabled": true,
+      "semantic": {
+        "rate": 0.01,
+        "threshold": 0.02
+      },
+      "episodic": {
+        "rate": 0.05,
+        "threshold": 0.1
+      }
+    },
+    "autoExtract": true,
+    "_note": "embedding model auto = берёт от основного провайдера. Если хотите OpenAI: поменяйте на text-embedding-3-small и добавьте OPENAI_API_KEY"
+  },
+  "skills": {
+    "enabled": true,
+    "path": "~/.claude/skills",
+    "autoLoad": true,
+    "installed": [
+      "weather",
+      "deep-research-pro",
+      "systematic-debugging",
+      "brainstorming",
+      "writing-plans",
+      "subagent-runner",
+      "subagent-coordinator",
+      "agent-builder",
+      "audit-website",
+      "presentation",
+      "excalidraw",
+      "tubescribe",
+      "tweet-writer",
+      "social-card-gen",
+      "reddit",
+      "last30days"
+    ]
+  },
+  "crons": {
+    "enabled": true,
+    "jobs": [
+      {
+        "name": "memory-cleanup",
+        "schedule": "0 3 * * *",
+        "command": "bun ~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/crons/memory-cleanup.ts",
+        "enabled": true
+      },
+      {
+        "name": "health-check",
+        "schedule": "*/30 * * * *",
+        "command": "bun ~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/crons/health-check.ts",
+        "enabled": true
+      },
+      {
+        "name": "backup",
+        "schedule": "0 2 * * *",
+        "command": "bun ~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/crons/backup.ts",
+        "enabled": true
+      }
+    ]
+  },
+  "security": {
+    "level": "moderate",
+    "allowedTools": [],
+    "disallowedTools": [],
+    "dataProtection": {
+      "neverStore": [
+        "паспортные данные",
+        "номера банковских карт",
+        "пароли",
+        "API ключи в plaintext",
+        "адреса проживания"
+      ],
+      "neverTransmit": [
+        "личные данные семьи",
+        "финансовая информация",
+        "медицинские данные",
+        "паспорта и документы"
+      ]
+    }
+  },
+  "heartbeat": {
+    "enabled": false,
+    "interval": 15,
+    "prompt": "",
+    "excludeWindows": []
+  },
+  "paths": {
+    "root": "~/.claude",
+    "plugins": "~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0",
+    "skills": "~/.claude/skills",
+    "memory": "~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/.claude/claudeclaw",
+    "data": "~/.claudeclaw",
+    "logs": "~/.claude/plugins/cache/claudeclaw/claudeclaw/1.0.0/.claude/claudeclaw/logs",
+    "backups": "~/.claudeclaw/backups"
+  },
+  "identity": {
+    "name": "ClaudeClaw",
+    "emoji": "⚡",
+    "role": "Персональный AI-ассистент",
+    "vibe": "Быстрый, дружелюбный, без лишних слов",
+    "platform": "Claude Code Desktop"
+  },
+  "compatibility": {
+    "canImportFrom": [
+      "OpenClaw"
+    ],
+    "canExportTo": [
+      "OpenClaw"
+    ],
+    "sharedResources": {
+      "memory": true,
+      "skills": true,
+      "crons": false,
+      "persistentAgents": false
+    }
+  },
+}

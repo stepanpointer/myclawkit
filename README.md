@@ -66,13 +66,17 @@ Full reference: [docs.openclaw.ai/gateway/configuration-reference.md](https://do
 
 ## Agent identity
 
-Two files define who the agent is:
+Four files define who the agent is and who it's working for:
 
-- **SOUL.md** — identity, values, and personality (installed to `~/myclawkit-workspace/`)
+- **SOUL.md** — values, personality, how it communicates
 - **AGENTS.md** — working rules: memory, security, skill routing
+- **IDENTITY.md** — agent name, owner, timezone _(fill this in first)_
+- **USER.md** — your profile: background, priorities, preferences _(fill this in first)_
 
-Edit these files to personalize the agent for your use case.
+All four are installed to `~/myclawkit-workspace/`. Edit them to personalize the agent.
 OpenClaw loads them from the workspace path configured in `openclaw.json`.
+
+A `BOOTSTRAP.md` first-run guide is also included — the agent reads it on first session and deletes it after.
 
 ## After installation
 

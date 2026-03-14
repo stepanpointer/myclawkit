@@ -237,7 +237,7 @@ import_soul() {
   mkdir -p "$workspace"
 
   local copied=0
-  for f in SOUL.md AGENTS.md; do
+  for f in SOUL.md AGENTS.md IDENTITY.md USER.md BOOTSTRAP.md; do
     if [ -f "$(pwd)/$f" ]; then
       if [ -f "$workspace/$f" ]; then
         log_warn "$f уже существует в $workspace (пропускаем)"
@@ -248,6 +248,23 @@ import_soul() {
       fi
     fi
   done
+
+  # docs/
+  if [ -d "$(pwd)/docs" ]; then
+    mkdir -p "$workspace/docs"
+    for f in "$(pwd)"/docs/*.md; do
+      [ -f "$f" ] || continue
+      local fname
+      fname=$(basename "$f")
+      if [ -f "$workspace/docs/$fname" ]; then
+        log_warn "docs/$fname уже существует (пропускаем)"
+      else
+        cp "$f" "$workspace/docs/"
+        log_info "docs/$fname → $workspace/docs/"
+        copied=$((copied + 1))
+      fi
+    done
+  fi
 
   if [ "$copied" -eq 0 ] && [ ! -f "$workspace/SOUL.md" ]; then
     log_warn "SOUL.md не найден — агент запустится без персонализации"
@@ -354,14 +371,18 @@ print_summary() {
   echo ""
   echo "Что дальше:"
   echo ""
-  echo "1. Проверьте и дополните конфиг:"
+  echo "1. Заполните профиль:"
+  echo "   ~/myclawkit-workspace/USER.md      ← кто вы, чем занимаетесь"
+  echo "   ~/myclawkit-workspace/IDENTITY.md  ← имя агента, timezone"
+  echo ""
+  echo "2. Проверьте и дополните конфиг:"
   echo "   ~/.openclaw/openclaw.json"
   echo "   Справка: https://docs.openclaw.ai/gateway/configuration-reference.md"
   echo ""
-  echo "2. Запустите OpenClaw:"
+  echo "3. Запустите OpenClaw:"
   echo "   openclaw start"
   echo ""
-  echo "3. Проверьте состояние:"
+  echo "4. Проверьте состояние:"
   echo "   openclaw status"
   echo "   openclaw doctor"
   echo ""

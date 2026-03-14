@@ -20,6 +20,8 @@ DISCORD_TOKEN=""
 SLACK_BOT_TOKEN=""
 SLACK_APP_TOKEN=""
 TIMEZONE=""
+WORKSPACE=""
+FORCE=false
 
 INTERACTIVE=false
 [ -t 0 ] && INTERACTIVE=true
@@ -42,6 +44,8 @@ Options:
   --slack-bot-token TOKEN    Slack bot token (xoxb-...)
   --slack-app-token TOKEN    Slack app token (xapp-..., socket mode)
   --timezone TZ              Timezone (default: UTC), e.g. Europe/Moscow
+  --workspace PATH           Workspace directory (default: ~/myclawkit-workspace)
+  --force                    Overwrite existing config if present
   -h, --help                 Show this help
 
 Examples:
@@ -76,6 +80,8 @@ parse_args() {
       --slack-bot-token) SLACK_BOT_TOKEN="$2";    shift 2 ;;
       --slack-app-token) SLACK_APP_TOKEN="$2";    shift 2 ;;
       --timezone)        TIMEZONE="$2";           shift 2 ;;
+      --workspace)       WORKSPACE="$2";          shift 2 ;;
+      --force)           FORCE=true;              shift ;;
       -h|--help)         usage; exit 0 ;;
       *) log_error "Unknown option: $1"; echo; usage; exit 1 ;;
     esac
@@ -83,6 +89,7 @@ parse_args() {
 
   PROVIDER="${PROVIDER:-anthropic}"
   TIMEZONE="${TIMEZONE:-UTC}"
+  WORKSPACE="${WORKSPACE:-$HOME/myclawkit-workspace}"
 
   if [[ -z "$MODEL" ]]; then
     case "$PROVIDER" in
@@ -182,11 +189,11 @@ setup_config() {
   log_header "Настройка конфигурации OpenClaw"
 
   local config_file="$HOME/.openclaw/openclaw.json"
-  local workspace="$HOME/myclawkit-workspace"
+  local workspace="$WORKSPACE"
   mkdir -p "$(dirname "$config_file")"
 
-  if [ -f "$config_file" ]; then
-    log_warn "Конфиг уже существует: $config_file (пропускаем)"
+  if [ -f "$config_file" ] && ! $FORCE; then
+    log_warn "Конфиг уже существует: $config_file (пропускаем, используйте --force для перезаписи)"
     return
   fi
 
@@ -233,7 +240,7 @@ EOF
 import_soul() {
   log_header "Импорт конфигурации агента"
 
-  local workspace="$HOME/myclawkit-workspace"
+  local workspace="$WORKSPACE"
   mkdir -p "$workspace"
 
   local copied=0
@@ -372,8 +379,8 @@ print_summary() {
   echo "Что дальше:"
   echo ""
   echo "1. Заполните профиль:"
-  echo "   ~/myclawkit-workspace/USER.md      ← кто вы, чем занимаетесь"
-  echo "   ~/myclawkit-workspace/IDENTITY.md  ← имя агента, timezone"
+  echo "   $WORKSPACE/USER.md      ← кто вы, чем занимаетесь"
+  echo "   $WORKSPACE/IDENTITY.md  ← имя агента, timezone"
   echo ""
   echo "2. Проверьте и дополните конфиг:"
   echo "   ~/.openclaw/openclaw.json"

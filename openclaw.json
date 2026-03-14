@@ -1,0 +1,51 @@
+{
+  "$schema": "./openclaw.schema.json",
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-opus-4-6"
+      },
+      "timezone": "UTC",
+      "heartbeat": {
+        "enabled": false,
+        "interval": "15m",
+        "prompt": ""
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "identity": {
+          "name": "OpenClaw",
+          "emoji": "⚡"
+        }
+      }
+    ]
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
+      "dmPolicy": "open",
+      "allowFrom": []
+    }
+  },
+  "tools": {
+    "profile": "full",
+    "allow": [],
+    "deny": []
+  },
+  "gateway": {
+    "mode": "local",
+    "port": 4632,
+    "bind": "loopback",
+    "controlUi": {
+      "enabled": true,
+      "basePath": "/openclaw"
+    }
+  },
+  "messages": {
+    "responsePrefix": "auto"
+  }
+}
